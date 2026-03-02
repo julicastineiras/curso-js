@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entregable 2 - Clasificador de productos</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <script src="./js/main.js" defer></script>
+</head>
+
+<body>
+  <main class="app">
+    <header class="header">
+      <h1>Clasificador de productos</h1>
+      <p>
+        Simulador: elegí un producto pendiente y colocalo en la caja correspondiente. Si no se corresponde con ninguna caja, descartalo.
+      </p>
+    </header>
+
+    <section class="grid">
+      <section class="cardOrganizar">
+        <h2>Organizar</h2>
+
+        <form id="formOrganizar" class="form">
+          <label>
+            Producto
+            <select id="selectPendiente" required>
+                <option value="">Seleccione producto</option>
+            </select>
+          </label>
+
+          <label>
+            Caja destino
+            <select id="selectCaja" required>
+                <option value="">Seleccione caja</option>
+                <option value="Frios">Frios</option>
+                <option value="Verduras">Verduras</option>
+                <option value="Frutas">Frutas</option>
+                <option value="Descartar">Descartar</option>
+            </select>
+          </label>
+
+          <button type="submit">Agregar</button>
+          <p id="mensajeJuego" class="mensaje" aria-live="polite"></p>
+        </form>
+      </section>
+    </section>
+
+    <section class="cardEstado">
+      <div class="row">
+        <h2>Estado</h2>
+        <div class="actions">
+          <button id="btnReiniciar" type="button">Reiniciar</button>
+        </div>
+      </div>
+
+      <div class="estado">
+        <div class="col">
+          <h3>Pendientes</h3>
+          <ul id="listaPendientes"></ul>
+        </div>
+
+        <div class="col">
+          <h3>Frios</h3>
+          <ul id="listaFrios"></ul>
+        </div>
+
+        <div class="col">
+          <h3>Verduras</h3>
+          <ul id="listaVerduras"></ul>
+        </div>
+
+        <div class="col">
+          <h3>Frutas</h3>
+          <ul id="listaFrutas"></ul>
+        </div>
+
+        <div class="col">
+          <h3>Descartados</h3>
+          <ul id="listaDescartados"></ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <small>Entrega 2 - juliana Castiñeiras</small>
+    </footer>
+  </main>
+</body>
+</html>
