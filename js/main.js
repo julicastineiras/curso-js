@@ -73,8 +73,7 @@ function renderSelectPendientes(selectHTML, listaPendientes) {
 
     selectHTML.appendChild(opt);
   }
-
-  // dejar placeholder seleccionado
+  
   selectHTML.value = "";
 }
 
@@ -131,7 +130,7 @@ function renderPantalla() {
 
 }
 
-// FUNCIÓN 8: muestra mensaje en el DOM
+// FUNCIÓN 8: muestra mensaje en el <p>
 function mostrarMensaje(texto, esError) {
   const p = document.getElementById("mensajeJuego");
 
