@@ -1,214 +1,204 @@
-// Productos base (array de objetos)
-const productosBase = [
-  { id: "p1", nombre: "Crema", correcta: "Frios" },
-  { id: "p2", nombre: "Lechuga", correcta: "Verduras" },
-  { id: "p3", nombre: "Banana", correcta: "Frutas" },
-  { id: "p4", nombre: "Azucar", correcta: "Descartar" },
-  { id: "p5", nombre: "Manzana", correcta: "Frutas" },
-  { id: "p6", nombre: "Espinaca", correcta: "Verduras" },
-  { id: "p7", nombre: "Sal", correcta: "Descartar" }
-];
+const URL = "./db/data.json";
+let productos = [];
 
-// Clave para guardar el estado del juego en localStorage
-const CLAVE_STORAGE = "estadoJuego";
-
-// Variables que representan el estado del juego
-let pendientes = [];
-let cajas = { Frios: [], Verduras: [], Frutas: [], Descartar: [] };
-
-// FUNCIÓN 1: guarda en storage
-function guardarStorage(clave, valor) {
-  localStorage.setItem(clave, JSON.stringify(valor));
+function getOrganizados() {
+  return JSON.parse(localStorage.getItem("organizados")) || [];
 }
 
-// FUNCIÓN 2: lee de storage
-function leerStorage(clave, valorPorDefecto) {
-  const data = localStorage.getItem(clave);
-  return data ? JSON.parse(data) : valorPorDefecto;
+function renderGondolas(productos) {
+  const select = document.getElementById("selectGondola");
+  select.innerHTML = '<option value="">Selecciona una gondola</option>';
+  const gondolas = [...new Set(productos.map((p) => p.categoria))];
+
+  gondolas.forEach((categoria) => {
+    select.innerHTML += `<option value="${categoria}">${categoria}</option>`;
+  });
 }
 
-// FUNCIÓN 3: reinicia el estado del juego
-function reiniciarJuego() {
-  pendientes = [];
-  for (const producto of productosBase) {
-    pendientes.push({
-      id: producto.id,
-      nombre: producto.nombre,
-      correcta: producto.correcta
+function renderTabla() {
+  const organizados = getOrganizados();
+  const tbody = document.getElementById("tablaProductos");
+  const columnas = ["Frios", "Verduras", "Frutas", "Almacen"];
+
+  tbody.innerHTML = "";
+
+  // agrupa por id y suma cantidades en tabla
+  const agrupados = {};
+  organizados.forEach((p) => {
+    if (agrupados[p.id]) {
+      agrupados[p.id].cantidad += p.cantidad;
+    } else {
+      agrupados[p.id] = { ...p };
+    }
+  });
+
+  Object.values(agrupados).forEach((p) => {
+    const columnaIndex = columnas.indexOf(p.categoria);
+    const tr = document.createElement("tr");
+    columnas.forEach((_, i) => {
+      tr.innerHTML += `<td>${i === columnaIndex ? `${p.nombre} (${p.cantidad})` : ""}</td>`;
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function renderDescartar() {
+  const organizados = getOrganizados();
+  const todos = [...productos];
+
+  organizados.forEach((org) => {
+    const existe = todos.find((p) => p.id === org.id);
+    if (!existe) {
+      todos.push({ id: org.id, nombre: org.nombre });
+    }
+  });
+
+  const descarte = document.getElementById("selectDescartar");
+  descarte.innerHTML = '<option value="">Selecciona un producto</option>';
+
+  todos.forEach((producto) => {
+    descarte.innerHTML += `<option value="${producto.id}">${producto.nombre}</option>`;
+  });
+}
+
+function obtenerProductos() {
+  const enStorage = localStorage.getItem("productos");
+  if (enStorage) {
+    productos = JSON.parse(enStorage);
+    renderProductos(productos);
+    renderCategorias(productos);
+    renderGondolas(productos);
+    renderTabla();
+    renderDescartar();
+  } else {
+    fetch(URL)
+      .then((response) => response.json())
+      .then((data) => {
+        productos = data;
+        localStorage.setItem("productos", JSON.stringify(productos));
+        renderProductos(productos);
+        renderCategorias(productos);
+        renderGondolas(productos);
+        renderTabla();
+        renderDescartar();
+      })
+      .catch((err) => console.log("Hubo un error", err))
+      .finally(() => console.log("finalizó la peticion"));
+  }
+}
+
+function renderProductos(productos) {
+  const select = document.getElementById("selectArticulo");
+  select.innerHTML = '<option value="">Selecciona un producto</option>';
+
+  productos.forEach((producto) => {
+    select.innerHTML += `<option value="${producto.id}">${producto.nombre}</option>`;
+  });
+}
+
+obtenerProductos();
+
+function renderCategorias(productos) {
+  const select = document.getElementById("selectCategoria");
+  select.innerHTML =
+    '<option value="">Selecciona la categoría del producto</option>';
+  const categorias = [...new Set(productos.map((p) => p.categoria))];
+
+  categorias.forEach((categoria) => {
+    select.innerHTML += `<option value="${categoria}">${categoria}</option>`;
+  });
+}
+
+function agregarProducto() {
+  const nombre = document.getElementById("agregaProducto").value;
+  const precio = document.getElementById("agregaPrecio").value;
+  const categoria = document.getElementById("selectCategoria").value;
+  const cantidad = parseInt(document.getElementById("agregaCantidad").value);
+
+  const productoExistente = productos.find(
+    (p) => p.nombre.toLowerCase() === nombre.toLowerCase(),
+  );
+
+  if (productoExistente) {
+    productoExistente.cantidadPendiente += cantidad;
+  } else {
+    productos.push({
+      id: `p${Math.max(...productos.map((p) => parseInt(p.id.slice(1)))) + 1}`,
+      codigo: `ART${String(productos.length + 1).padStart(3, "0")}`,
+      nombre,
+      precio,
+      categoria,
+      cantidadPendiente: cantidad,
     });
   }
-  cajas = {
-    Frios: [],
-    Verduras: [],
-    Frutas: [],
-    Descartar: []
-  };
-  guardarStorage(CLAVE_STORAGE, { pendientes, cajas });
+
+  localStorage.setItem("productos", JSON.stringify(productos));
+  renderProductos(productos);
+  document.getElementById("agregaProducto").value = "";
+  document.getElementById("agregaPrecio").value = "";
+  document.getElementById("selectCategoria").value = "";
+  document.getElementById("agregaCantidad").value = "";
 }
 
-// FUNCIÓN 4: busca un producto en pendientes por id
-function buscarPendientePorId(idBuscado) {
-  return pendientes.find(p => p.id === idBuscado);
-}
+//Descartar producto
 
-// FUNCIÓN 5: renderiza el select de pendientes
-function renderSelectPendientes(selectHTML, listaPendientes) {
+function descartarProducto() {
+  const nombreDescarte = document.getElementById("selectDescartar").value;
+  const cantidadDescarte = parseInt(
+    document.getElementById("descartaCantidad").value,
+  );
+  const pendiente = productos.find((p) => p.id === nombreDescarte);
 
-  // Mantiene el placeholder
-  selectHTML.innerHTML = '<option value="">Seleccione producto</option>';
-
-  if (listaPendientes.length === 0) {
-    selectHTML.disabled = true;
+  // valida que la cantidad sea un número mayor a 0 y que no supere las pendientes
+  if (!cantidadDescarte || cantidadDescarte <= 0) {
+    Toastify({
+      text: "Ingresá una cantidad válida.",
+      gravity: "top",
+      position: "center",
+    }).showToast();
+    return;
+  }
+  if (!pendiente || cantidadDescarte > pendiente.cantidadPendiente) {
+    Toastify({
+      text: `Solo hay ${pendiente ? pendiente.cantidadPendiente : 0} unidades pendientes.`,
+      gravity: "top",
+      position: "center",
+    }).showToast();
     return;
   }
 
-  selectHTML.disabled = false;
+  pendiente.cantidadPendiente -= cantidadDescarte;
 
-  for (const prod of listaPendientes) {
-
-    const opt = document.createElement("option");
-
-    opt.value = prod.id;
-    opt.textContent = prod.nombre;
-
-    selectHTML.appendChild(opt);
+  // si llega a 0, elimina el producto del array
+  if (pendiente.cantidadPendiente === 0) {
+    productos = productos.filter((p) => p.id !== nombreDescarte);
   }
-  
-  selectHTML.value = "";
+
+  // guarda el array actualizado en storage y re-renderiza
+  localStorage.setItem("productos", JSON.stringify(productos));
+  renderProductos(productos);
+  renderDescartar();
+
+  Toastify({
+    text: `${cantidadDescarte} unidades descartadas.`,
+    duration: 3000,
+    style: { background: "rgb(255, 208, 0)" },
+    gravity: "top",
+    position: "center",
+  }).showToast();
+
+  // limpia los campos
+  document.getElementById("descartaCantidad").value = "";
+  document.getElementById("selectDescartar").value = "";
+  document.getElementById("infoDescartar").textContent = "";
 }
 
-// FUNCIÓN 6: renderiza una lista de productos (ul)
-function renderLista(ulHTML, listaProductos) {
-  ulHTML.innerHTML = "";
-
-  if (listaProductos.length === 0) {
-    const li = document.createElement("li");
-    li.textContent = "-";
-    ulHTML.appendChild(li);
-    return;
-  }
-
-  for (const prod of listaProductos) {
-    const li = document.createElement("li");
-    li.textContent = prod.nombre;
-    ulHTML.appendChild(li);
-  }
-}
-
-// FUNCIÓN 7: renderiza TODO el estado en pantalla
-function renderPantalla() {
-
-  renderSelectPendientes(
-    document.getElementById("selectPendiente"),
-    pendientes
-  );
-
-  renderLista(
-    document.getElementById("listaPendientes"),
-    pendientes
-  );
-
-  renderLista(
-    document.getElementById("listaFrios"),
-    cajas.Frios
-  );
-
-  renderLista(
-    document.getElementById("listaVerduras"),
-    cajas.Verduras
-  );
-
-  renderLista(
-    document.getElementById("listaFrutas"),
-    cajas.Frutas
-  );
-
-  renderLista(
-    document.getElementById("listaDescartados"),
-    cajas.Descartar
-  );
-
-}
-
-// FUNCIÓN 8: muestra mensaje en el <p>
-function mostrarMensaje(texto, esError) {
-  const p = document.getElementById("mensajeJuego");
-
-  p.textContent = texto;
-
-  if (esError) {
-    p.classList.add("error");
-  } else {
-    p.classList.remove("error");
-  }
-}
-
-// FUNCIÓN 9: clasificar un producto
-function clasificarProducto(idProducto, cajaElegida) {
-  const producto = buscarPendientePorId(idProducto);
-
-  if (!producto) {
-    mostrarMensaje("Ese producto ya no está pendiente.", true);
-    return;
-  }
-
-  if (cajaElegida !== producto.correcta) {
-    mostrarMensaje("❌ Incorrecto. Reintentá.", true);
-    return;
-  }
-
-  // Mover: sacar de pendientes
-  pendientes = pendientes.filter(p => p.id !== idProducto);
-
-  // Guardar en la caja correcta
-  cajas[cajaElegida].push(producto);
-
-  mostrarMensaje("✅ Correcto. Producto guardado.", false);
-
-  // Guardar estado
-  guardarStorage(CLAVE_STORAGE, { pendientes, cajas });
-
-  // Actualizar pantalla
-  renderPantalla();
-
-  // limpiar selección de caja
-  document.getElementById("selectCaja").value = "";
-  document.getElementById("selectPendiente").value = "";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  const estadoGuardado = leerStorage(CLAVE_STORAGE, null);
-
-  if (estadoGuardado) {
-    pendientes = estadoGuardado.pendientes;
-    cajas = estadoGuardado.cajas;
-  } else {
-    reiniciarJuego();
-  }
-
-  renderPantalla();
-
-  // 3) Evento: organizar producto (submit del form)
-  const formOrganizar = document.getElementById("formOrganizar");
-  formOrganizar.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const selectPendiente = document.getElementById("selectPendiente");
-    const selectCaja = document.getElementById("selectCaja");
-
-    const idProducto = selectPendiente.value;
-    const cajaElegida = selectCaja.value;
-
-    if (!idProducto) return;
-
-    clasificarProducto(idProducto, cajaElegida);
+//Listeners
+document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
+document.getElementById("btnDescartar").addEventListener("click", descartarProducto);
+document.getElementById("selectDescartar").addEventListener("change", function () {
+    const pendientes = productos.find((p) => p.id === this.value);
+    document.getElementById("infoDescartar").textContent = this.value
+      ? `Cantidad pendiente: ${pendientes?.cantidadPendiente ?? 0}`
+      : "";
   });
-
-  // 4) Evento: reiniciar
-  const btnReiniciar = document.getElementById("btnReiniciar");
-  btnReiniciar.addEventListener("click", function () {
-    reiniciarJuego();
-    mostrarMensaje("Juego reiniciado.", false);
-    renderPantalla();
-  });
-});

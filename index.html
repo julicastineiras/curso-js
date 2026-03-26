@@ -1,90 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Entregable 2 - Clasificador de productos</title>
-  <link rel="stylesheet" href="./styles/style.css" />
-  <script src="./js/main.js" defer></script>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entregable 2 - Clasificador de productos</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script src="./js/main.js" defer></script>
+    <script src="./js/OrganizarProductos.js" defer></script>
+  </head>
 
-<body>
-  <main class="app">
-    <header class="header">
-      <h1>Clasificador de productos</h1>
-      <p>
-        Simulador: elegí un producto pendiente y colocalo en la caja correspondiente. Si no se corresponde con ninguna caja, descartalo.
-      </p>
-    </header>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1>Simulador deposito de supermercado</h1>
+        <p>
+          En este simulador podrás agregar productos y organizarlos como si
+          estuvieras en el deposito del supermercado.
+        </p>
+      </header>
 
-    <section class="grid">
-      <section class="cardOrganizar">
-        <h2>Organizar</h2>
+      <section class="grid">
+        <article class="cardAgregar">
+          <h2>Ingreso de articulos</h2>
+          <input
+            type="text"
+            id="agregaProducto"
+            placeholder="Producto"
+          />
+          <input
+            type="number"
+            id="agregaPrecio"
+            placeholder="Precio"
+          />
+          <input
+            type="number"
+            id="agregaCantidad"
+            placeholder="Cantidad"
+          />
+          <select
+            id="selectCategoria"
+            placeholder="Selecciona la categoría del producto"
+          >
+            <option value="">Selecciona la categoría del producto</option>
+          </select>
+          <button id="btnAgregar">Agregar producto</button>
+        </article>
 
-        <form id="formOrganizar" class="form">
-          <label>
-            Producto
-            <select id="selectPendiente" required>
-                <option value="">Seleccione producto</option>
-            </select>
-          </label>
-
-          <label>
-            Caja destino
-            <select id="selectCaja" required>
-                <option value="">Seleccione caja</option>
-                <option value="Frios">Frios</option>
-                <option value="Verduras">Verduras</option>
-                <option value="Frutas">Frutas</option>
-                <option value="Descartar">Descartar</option>
-            </select>
-          </label>
-
-          <button type="submit">Agregar</button>
-          <p id="mensajeJuego" class="mensaje" aria-live="polite"></p>
-        </form>
+        <article class="cardOrganizar">
+          <h2>Organizar artículo en gondola</h2>
+          <select id="selectArticulo">
+            <option value="">Selecciona un producto pendiente</option>
+          </select>
+          <select id="selectGondola">
+            <option value="">Selecciona una gondola</option>
+          </select>
+          <input
+            type="number"
+            id="organizaCantidad"
+            placeholder="Cantidad a organizar"
+          />
+          <button id="btnOrganizar">Agregar a gondola</button>
+        </article>
       </section>
-    </section>
-
-    <section class="cardEstado">
-      <div class="row">
-        <h2>Estado</h2>
-        <div class="actions">
-          <button id="btnReiniciar" type="button">Reiniciar</button>
-        </div>
-      </div>
-
-      <div class="estado">
-        <div class="col">
-          <h3>Pendientes</h3>
-          <ul id="listaPendientes"></ul>
-        </div>
-
-        <div class="col">
-          <h3>Frios</h3>
-          <ul id="listaFrios"></ul>
-        </div>
-
-        <div class="col">
-          <h3>Verduras</h3>
-          <ul id="listaVerduras"></ul>
-        </div>
-
-        <div class="col">
-          <h3>Frutas</h3>
-          <ul id="listaFrutas"></ul>
-        </div>
-
-        <div class="col">
-          <h3>Descartados</h3>
-          <ul id="listaDescartados"></ul>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <small>Entrega 2 - juliana Castiñeiras</small>
-    </footer>
-  </main>
-</body>
+      <section class="grid-full">
+        <article class="cardEstado">
+          <h2>Estado de articulos</h2>
+          <table class="tablaEstado">
+            <thead>
+              <tr>
+                <th>Frios</th>
+                <th>Verduras</th>
+                <th>Frutas</th>
+                <th>Almacen</th>
+              </tr>
+            </thead>
+            <tbody id="tablaProductos"></tbody>
+          </table>
+        </article>
+      </section>
+      <section class="grid-full">
+        <article class="cardDescartar">
+          <h2>Descarta articulos</h2>
+          <p>
+            Solo se pueden descartar productos en gondola, no se pueden descartar productos pendientes de organizar.
+          </p>
+          <select id="selectDescartar">
+            <option value="">Selecciona un producto para descartar</option>
+          </select>
+          <p id="infoDescartar"></p>
+          <input
+            type="number"
+            id="descartaCantidad"
+            placeholder="Cantidad a descartar"
+          />
+          <button id="btnDescartar">Descartar producto</button>
+        </article>
+      </section>
+      <footer class="footer">
+        <small>Proyecto final - Juliana Castiñeiras</small>
+      </footer>
+    </main>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+  </body>
 </html>

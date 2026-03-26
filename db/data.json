@@ -1,0 +1,17 @@
+[
+  { "id": "p1", "codigo": "ART001", "nombre": "Crema", "precio": 2500, "categoria": "Frios", "cantidadPendiente": 5},
+  { "id": "p2", "codigo": "ART002", "nombre": "Lechuga", "precio": 1200, "categoria": "Verduras", "cantidadPendiente": 4},
+  { "id": "p3", "codigo": "ART003", "nombre": "Banana", "precio": 2000, "categoria": "Frutas", "cantidadPendiente": 6 },
+  { "id": "p4", "codigo": "ART004", "nombre": "Azucar", "precio": 1500, "categoria": "Almacen", "cantidadPendiente": 3 },
+  { "id": "p5", "codigo": "ART005", "nombre": "Manzana", "precio": 2000, "categoria": "Frutas", "cantidadPendiente": 5 },
+  { "id": "p6", "codigo": "ART006", "nombre": "Espinaca", "precio": 3000, "categoria": "Verduras", "cantidadPendiente": 4 },
+  { "id": "p7", "codigo": "ART007", "nombre": "Sal", "precio": 1000, "categoria": "Almacen", "cantidadPendiente": 2 },
+  { "id": "p8", "codigo": "ART008", "nombre": "Leche", "precio": 1800, "categoria": "Frios", "cantidadPendiente": 3 },
+  { "id": "p9", "codigo": "ART009", "nombre": "Naranja", "precio": 2200, "categoria": "Frutas", "cantidadPendiente": 8 },
+  { "id": "p10", "codigo": "ART010", "nombre": "Zanahoria", "precio": 900, "categoria": "Verduras", "cantidadPendiente": 6 },
+  { "id": "p11", "codigo": "ART011", "nombre": "Aceite", "precio": 4500, "categoria": "Almacen", "cantidadPendiente": 2 },
+  { "id": "p12", "codigo": "ART012", "nombre": "Queso", "precio": 5000, "categoria": "Frios", "cantidadPendiente": 4 },
+  { "id": "p13", "codigo": "ART013", "nombre": "Tomate", "precio": 1600, "categoria": "Verduras", "cantidadPendiente": 7 },
+  { "id": "p14", "codigo": "ART014", "nombre": "Pera", "precio": 1900, "categoria": "Frutas", "cantidadPendiente": 5 },
+  { "id": "p15", "codigo": "ART015", "nombre": "Yogurt", "precio": 2800, "categoria": "Frios", "cantidadPendiente": 3 }
+]
