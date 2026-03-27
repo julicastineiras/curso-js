@@ -61,6 +61,26 @@ function renderDescartar() {
   });
 }
 
+function renderProductos(productos) {
+  const select = document.getElementById("selectArticulo");
+  select.innerHTML = '<option value="">Selecciona un producto</option>';
+
+  productos.forEach((producto) => {
+    select.innerHTML += `<option value="${producto.id}">${producto.nombre}</option>`;
+  });
+}
+
+function renderCategorias(productos) {
+  const select = document.getElementById("selectCategoria");
+  select.innerHTML =
+    '<option value="">Selecciona la categoría del producto</option>';
+  const categorias = [...new Set(productos.map((p) => p.categoria))];
+
+  categorias.forEach((categoria) => {
+    select.innerHTML += `<option value="${categoria}">${categoria}</option>`;
+  });
+}
+
 function obtenerProductos() {
   const enStorage = localStorage.getItem("productos");
   if (enStorage) {
@@ -87,31 +107,8 @@ function obtenerProductos() {
   }
 }
 
-function renderProductos(productos) {
-  const select = document.getElementById("selectArticulo");
-  select.innerHTML = '<option value="">Selecciona un producto</option>';
-
-  productos.forEach((producto) => {
-    select.innerHTML += `<option value="${producto.id}">${producto.nombre}</option>`;
-  });
-}
-
-obtenerProductos();
-
-function renderCategorias(productos) {
-  const select = document.getElementById("selectCategoria");
-  select.innerHTML =
-    '<option value="">Selecciona la categoría del producto</option>';
-  const categorias = [...new Set(productos.map((p) => p.categoria))];
-
-  categorias.forEach((categoria) => {
-    select.innerHTML += `<option value="${categoria}">${categoria}</option>`;
-  });
-}
-
 function agregarProducto() {
   const nombre = document.getElementById("agregaProducto").value;
-  const precio = document.getElementById("agregaPrecio").value;
   const categoria = document.getElementById("selectCategoria").value;
   const cantidad = parseInt(document.getElementById("agregaCantidad").value);
 
@@ -126,7 +123,6 @@ function agregarProducto() {
       id: `p${Math.max(...productos.map((p) => parseInt(p.id.slice(1)))) + 1}`,
       codigo: `ART${String(productos.length + 1).padStart(3, "0")}`,
       nombre,
-      precio,
       categoria,
       cantidadPendiente: cantidad,
     });
@@ -192,6 +188,9 @@ function descartarProducto() {
   document.getElementById("selectDescartar").value = "";
   document.getElementById("infoDescartar").textContent = "";
 }
+
+// Inicio para renderizar todo al cargar la página
+obtenerProductos();
 
 //Listeners
 document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
