@@ -43,23 +43,14 @@ function renderTabla() {
 }
 
 function renderDescartar() {
-  const organizados = getOrganizados();
-  const todos = [...productos];
-
-  organizados.forEach((org) => {
-    const existe = todos.find((p) => p.id === org.id);
-    if (!existe) {
-      todos.push({ id: org.id, nombre: org.nombre });
-    }
-  });
-
   const descarte = document.getElementById("selectDescartar");
   descarte.innerHTML = '<option value="">Selecciona un producto</option>';
 
-  todos.forEach((producto) => {
+  productos.filter(p => p.cantidadPendiente > 0).forEach((producto) => {
     descarte.innerHTML += `<option value="${producto.id}">${producto.nombre}</option>`;
   });
 }
+
 
 function renderProductos(productos) {
   const select = document.getElementById("selectArticulo");
@@ -139,9 +130,7 @@ function agregarProducto() {
 
 function descartarProducto() {
   const nombreDescarte = document.getElementById("selectDescartar").value;
-  const cantidadDescarte = parseInt(
-    document.getElementById("descartaCantidad").value,
-  );
+  const cantidadDescarte = parseInt(document.getElementById("descartaCantidad").value);
   const pendiente = productos.find((p) => p.id === nombreDescarte);
 
   // valida que la cantidad sea un número mayor a 0 y que no supere las pendientes
