@@ -41,7 +41,7 @@ p {
     gap: 20px;
 }
 
-.grid-full {
+.gridCompleto {
     margin-top: 20px;
 }
 
@@ -75,12 +75,6 @@ p {
   width: 100%;
   margin-bottom: 8px;
 }
-
-#btnOrganizar {
-    margin-top: 41px;
-}
-
-
 
 .cardEstado {
   background: #fff; 

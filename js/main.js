@@ -131,7 +131,6 @@ function agregarProducto() {
   localStorage.setItem("productos", JSON.stringify(productos));
   renderProductos(productos);
   document.getElementById("agregaProducto").value = "";
-  document.getElementById("agregaPrecio").value = "";
   document.getElementById("selectCategoria").value = "";
   document.getElementById("agregaCantidad").value = "";
 }
@@ -186,7 +185,7 @@ function descartarProducto() {
   // limpia los campos
   document.getElementById("descartaCantidad").value = "";
   document.getElementById("selectDescartar").value = "";
-  document.getElementById("infoDescartar").textContent = "";
+  document.getElementById("cantidadPendiente").textContent = "";
 }
 
 // Inicio para renderizar todo al cargar la página
@@ -197,7 +196,7 @@ document.getElementById("btnAgregar").addEventListener("click", agregarProducto)
 document.getElementById("btnDescartar").addEventListener("click", descartarProducto);
 document.getElementById("selectDescartar").addEventListener("change", function () {
     const pendientes = productos.find((p) => p.id === this.value);
-    document.getElementById("infoDescartar").textContent = this.value
+    document.getElementById("cantidadPendiente").textContent = this.value
       ? `Cantidad pendiente: ${pendientes?.cantidadPendiente ?? 0}`
       : "";
   });
